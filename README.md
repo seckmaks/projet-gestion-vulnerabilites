@@ -21,19 +21,13 @@ pour l'université, depuis la découverte réseau jusqu'à la preuve de non-rég
 ```
 ├── lab/                  Lab EVE-NG : architecture, cahier des charges, configs IOS, guide
 ├── ansible/              Inventaire + playbooks (remédiation caméra IP, rotation, idempotence)
-├── scripts/              Générateurs Python des livrables (reportlab / python-docx)
 ├── docs/
 │   ├── livrables/        Les 6 livrables hebdomadaires (PDF + DOCX)
 │   ├── preuves/          Rapports GSA, tableur KPI, captures d'écran du lab
 │   └── memoire/          Le mémoire de fin de cycle (PDF)
 ```
 
-## 🔧 Régénérer les livrables
-
-```bash
-pip install reportlab python-docx pillow pypdf
-python3 scripts/build_livrable2.py            # PDF (idem pour 3-6)
-python3 scripts/build_livrable2_docx.py       # DOCX jumeau
+cripts/build_livrable2_docx.py       # DOCX jumeau
 ```
 
 ## 🛠️ Outils du lab
