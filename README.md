@@ -22,9 +22,9 @@ pour l'université, depuis la découverte réseau jusqu'à la preuve de non-rég
 ├── lab/                  Lab EVE-NG : architecture, cahier des charges, configs IOS, guide
 ├── ansible/              Inventaire + playbooks (remédiation caméra IP, rotation, idempotence)
 ├── docs/
-│   ├── livrables/        Les 6 livrables hebdomadaires (PDF + DOCX)
-│   ├── preuves/          Rapports GSA, tableur KPI, captures d'écran du lab
-│   └── memoire/          Le mémoire de fin de cycle (PDF)
+   ├── livrables/        Les 6 livrables hebdomadaires (PDF + DOCX)
+   ├── preuves/          Rapports GSA, tableur KPI, captures d'écran du lab
+   └── memoire/          Le mémoire de fin de cycle (PDF)
 ```
 
 cripts/build_livrable2_docx.py       # DOCX jumeau
