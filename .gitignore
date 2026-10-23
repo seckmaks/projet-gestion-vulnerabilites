@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+_pass1.pdf
+*.log
+.env
+secrets*.yml
+vault*

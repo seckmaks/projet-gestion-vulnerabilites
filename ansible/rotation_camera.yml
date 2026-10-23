@@ -1,0 +1,53 @@
+---
+# PREUVE 7 — Rotation du mot de passe ADMIN de la Camera (172.16.30.11) via Ansible
+# ---------------------------------------------------------------------------------
+# Compte visé : admin (mdp lab « 1234 » = constat V-05) -> « {{ cam_password }} »
+# 1er passage  : changed=1 (s'authentifier avec 1234 — SSH et sudo)
+# 2e passage   : changed=0 (s'authentifier avec {{ cam_password }} — prouve la rotation)
+#
+# Lancement (depuis GBVA) :
+#   export ANSIBLE_HOST_KEY_CHECKING=False
+#   ansible-playbook -i '172.16.30.11,' playbook_rotation_camera.yml -u admin -k -K
+#   ( -k = mot de passe SSH, -K = mot de passe sudo — les deux = 1234 au 1er passage,
+#     les deux = {{ cam_password }} au 2e )
+
+- name: PREUVE 7 — rotation du mot de passe admin de la Camera
+  hosts: all
+  gather_facts: false
+  become: true
+
+  vars:
+    # Hash SHA-512 de « {{ cam_password }} » (openssl passwd -6) — fixe = idempotence
+    hash_nouveau_mdp: "{{ hash_cam_password }}"
+    # Mettre true si le module user échoue (python absent / busybox)
+    forcer_raw: false
+
+  tasks:
+    - name: Détection de python3
+      ansible.builtin.raw: "which python3 || echo NO_PYTHON"
+      register: detection
+      changed_when: false
+
+    - name: Choix de la stratégie
+      ansible.builtin.set_fact:
+        avec_python: "{{ ('NO_PYTHON' not in detection.stdout) and (not forcer_raw) }}"
+
+    - name: Rotation via le module user (python3 présent)
+      ansible.builtin.user:
+        name: admin
+        password: "{{ hash_nouveau_mdp }}"
+      register: rotation_user
+      when: avec_python
+
+    - name: Rotation via raw (pas de python3) — idempotence par marqueur
+      ansible.builtin.raw: "test -f /tmp/.rotation_2026 || (echo 'admin:{{ cam_password }}' | sudo chpasswd && touch /tmp/.rotation_2026 && echo APPLIQUE)"
+      register: rotation_raw
+      when: not avec_python
+      changed_when: "'APPLIQUE' in rotation_raw.stdout"
+
+    - name: Traçabilité
+      ansible.builtin.debug:
+        msg: >-
+          {{ 'rotation appliquée (changed=1)' if (rotation_user.changed | default(false))
+             or ('APPLIQUE' in rotation_raw.stdout | default('')) else
+             'rien à faire (changed=0) — idempotence' }}

@@ -1,0 +1,19 @@
+# PREUVE 7 — variante RAW v2 : python cible trop ancien (modules morts) → raw ; élévation sudo -S ;
+# IDEMPOTENCE PAR GARDE : chaque tâche teste son marqueur AVANT d'agir (v1 = marqueurs créés mais
+# jamais testés → changed=2 à chaque run — bug corrigé ici). changed_when lit les marqueurs de sortie.
+- name: Remédiation Camera (V-05) — Atelier B, obj 5 — variante RAW idempotente (v2, garde par marqueurs)
+  hosts: camera
+  gather_facts: false
+  tasks:
+  - name: 'Rotation du compte admin (fini admin/1234) — garde : marqueur'
+    ansible.builtin.raw: echo '{{ cam_password }}' | sudo -S sh -c 'if test -f /root/.vms_pwd_2026; then echo PWD_DEJA_OK; else usermod -p "$1" admin && touch /root/.vms_pwd_2026 && echo PWD_APPLIQUE; fi' sh '{{ hash_cam_password }}'
+    register: t1
+    changed_when: '''PWD_APPLIQUE'' in t1.stdout'
+  - name: 'Page constructeur remplacée par page durcie CAM-MET — garde : marqueur'
+    ansible.builtin.raw: echo '{{ cam_password }}' | sudo -S sh -c 'if test -f /root/.vms_page_2026; then echo PAGE_DEJA_OK; else printf "%s" "<!doctype html><html><head><title>Camera CAM-MET</title></head><body><h1>CAM-MET</h1><p>Configuration durcie — accès administration restreinte.</p></body></html>" > /var/www/html/index.html && touch /root/.vms_page_2026 && echo PAGE_APPLIQUEE; fi'
+    register: t2
+    changed_when: '''PAGE_APPLIQUEE'' in t2.stdout'
+  - name: 'nginx actif (démarré + activé au boot) — garde : état réel'
+    ansible.builtin.raw: echo '{{ cam_password }}' | sudo -S sh -c 'if systemctl is-active --quiet nginx && systemctl is-enabled --quiet nginx; then echo NGINX_DEJA_OK; else systemctl enable --now nginx 2>/dev/null || (update-rc.d nginx enable 2>/dev/null; service nginx start); echo NGINX_APPLIQUE; fi'
+    register: t3
+    changed_when: '''NGINX_APPLIQUE'' in t3.stdout'
