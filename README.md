@@ -27,7 +27,7 @@ pour l'université, depuis la découverte réseau jusqu'à la preuve de non-rég
    └── memoire/          Le mémoire de fin de cycle (PDF)
 ```
 
-cripts/build_livrable2_docx.py       # DOCX jumeau
+
 ```
 
 ## 🛠️ Outils du lab
@@ -44,4 +44,4 @@ EVE-NG · Greenbone Vulnerability Management (OpenVAS/GSA 25.04) · DefectDojo 3
 
 ## 📜 Mémoire
 
-Le mémoire complet (36 pages) est disponible dans [`docs/memoire/`](docs/memoire/).
+Le mémoire complet (52 pages) est disponible dans [`docs/memoire/`](docs/memoire/).
